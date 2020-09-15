@@ -6,6 +6,8 @@ import { Text, Box, useMatcapTexture, Octahedron } from 'drei'
 import { ThinFilmFresnelMap } from './ThinFilmFresnelMap'
 import { mirrorsData, textData } from "./data"
 
+const FONT = "https://fonts.gstatic.com/s/raleway/v17/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVtzpbCIPrcVIT9d0c8.woff"
+
 function ResponsiveText(props) {
   const ref = useRef()
   const { viewport } = useThree() 
@@ -29,9 +31,9 @@ function ResponsiveText(props) {
 
   return (
     <group ref={ref} {...props}>
-      <Text position={[-1.5, 0.2, 0]} fontSize={3.8} font="https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmYUtfBBc4AMP6lQ.woff2" >r</Text>
-      <Text position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI/16]} fontSize={3.8} font="https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmYUtfBBc4AMP6lQ.woff2" >3</Text>
-      <Text position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} fontSize={3.8} font="https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmYUtfBBc4AMP6lQ.woff2" >f</Text>
+      <Text position={[-1.8, 0.4, 0]} fontSize={3.8} font={FONT} >R</Text>
+      <Text position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI/16]} fontSize={3.8} font={FONT} >3</Text>
+      <Text position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} fontSize={3.8} font={FONT} >F</Text>
     </group>
   )
 }
