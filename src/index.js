@@ -9,7 +9,7 @@ function App() {
 
   return (
     <Canvas
-      camera={{ fov: 70 }}
+      camera={{ position: [0, 0, 2], fov: 70 }}
       onCreated={({ scene }) => {
         scene.background = new THREE.Color("#000000").convertGammaToLinear()
       }}
@@ -17,7 +17,7 @@ function App() {
       <Suspense fallback={null}>
         <Scene />
       </Suspense>
-      <ambientLight intensity={1} />
+      <ambientLight intensity={.4} />
     </Canvas>
   )
 }
