@@ -9,7 +9,7 @@ function App() {
 
   return (
     <Canvas
-      camera={{ position: [0, 0, 2], fov: 70 }}
+      camera={{ fov: 70 }}
       onCreated={({ scene }) => {
         scene.background = new THREE.Color("#000000").convertGammaToLinear()
       }}

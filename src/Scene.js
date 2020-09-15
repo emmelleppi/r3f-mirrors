@@ -1,17 +1,37 @@
 import React, { useRef, useState } from 'react'
 import * as THREE from 'three'
-import { useFrame } from 'react-three-fiber'
+import { useFrame, useThree } from 'react-three-fiber'
 import { Text, Box, useMatcapTexture, Octahedron } from 'drei'
 
 import { ThinFilmFresnelMap } from './ThinFilmFresnelMap'
 import { mirrorsData, textData } from "./data"
 
 function ResponsiveText(props) {
+  const ref = useRef()
+  const { viewport } = useThree() 
+
+  useFrame(({ mouse }) => {
+    const x = (mouse.x * viewport.width) / 30
+    const y = (mouse.y * viewport.height) / 30
+    
+    ref.current.position.set(
+      props.position[0] + x,
+      props.position[1] + y,
+      props.position[2]
+    )
+
+    ref.current.rotation.set(
+      props.rotation[0] - y,
+      props.rotation[1] + x,
+      props.rotation[2]
+    )
+  })
+
   return (
-    <group {...props}>
-      <Text position={[-1.5, 0.2, 0]} fontSize={3.8} font="/FiraSansCondensed-Regular.ttf" >r</Text>
-      <Text position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI/16]} fontSize={3.8} font="/FiraSansCondensed-Regular.ttf" >3</Text>
-      <Text position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} fontSize={3.8} font="/FiraSansCondensed-Regular.ttf" >f</Text>
+    <group ref={ref} {...props}>
+      <Text position={[-1.5, 0.2, 0]} fontSize={3.8} font="https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmYUtfBBc4AMP6lQ.woff2" >r</Text>
+      <Text position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI/16]} fontSize={3.8} font="https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmYUtfBBc4AMP6lQ.woff2" >3</Text>
+      <Text position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} fontSize={3.8} font="https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmYUtfBBc4AMP6lQ.woff2" >f</Text>
     </group>
   )
 }
@@ -21,10 +41,16 @@ function Mirror({ material, texture, args, map, ...props }) {
 
   useFrame(() => void (ref.current.rotation.y += 0.01))
 
+  
   return (
     <group {...props}>
       <Box ref={ref} args={args} >
-        <meshLambertMaterial envMap={texture} map={map}/>
+        <meshLambertMaterial attachArray="material" map={map} color={0xaaaaaa} />
+        <meshLambertMaterial attachArray="material" map={map} color={0xaaaaaa} />
+        <meshLambertMaterial attachArray="material" map={map} color={0xaaaaaa} />
+        <meshLambertMaterial attachArray="material" map={map} color={0xaaaaaa} />
+        <meshLambertMaterial attachArray="material" envMap={texture} map={map}/>
+        <meshLambertMaterial attachArray="material" envMap={texture} map={map}/>
       </Box>
     </group>
   )
