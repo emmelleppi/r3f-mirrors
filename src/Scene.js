@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from 'react-three-fiber'
 import { Text, Box, useMatcapTexture, Octahedron } from 'drei'
@@ -9,28 +9,8 @@ import { mirrorsData, textData } from "./data"
 const FONT = "https://fonts.gstatic.com/s/raleway/v17/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVtzpbCIPrcVIT9d0c8.woff"
 
 function ResponsiveText(props) {
-  const ref = useRef()
-  const { viewport } = useThree() 
-
-  useFrame(({ mouse }) => {
-    const x = (mouse.x * viewport.width) / 30
-    const y = (mouse.y * viewport.height) / 30
-    
-    ref.current.position.set(
-      props.position[0] + x,
-      props.position[1] + y,
-      props.position[2]
-    )
-
-    ref.current.rotation.set(
-      props.rotation[0] - y,
-      props.rotation[1] + x,
-      props.rotation[2]
-    )
-  })
-
   return (
-    <group ref={ref} {...props}>
+    <group {...props}>
       <Text position={[-1.8, 0.4, 0]} fontSize={3.8} font={FONT} >R</Text>
       <Text position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI/16]} fontSize={3.8} font={FONT} >3</Text>
       <Text position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} fontSize={3.8} font={FONT} >F</Text>
@@ -41,8 +21,10 @@ function ResponsiveText(props) {
 function Mirror({ material, texture, args, map, ...props }) {
   const ref = useRef()
 
-  useFrame(() => void (ref.current.rotation.y += 0.01))
-
+  useFrame(() => {
+    ref.current.rotation.y += 0.001
+    ref.current.rotation.z += 0.01
+  })
   
   return (
     <group {...props}>
@@ -73,22 +55,45 @@ export default function Scene() {
     sphere.current.visible = false
   })
 
+  const group = useRef()
+  
+  const { viewport } = useThree()
 
+  const [posV, rotE, rotQ] = useMemo(() => {
+    return [
+      new THREE.Vector3(0, 0, 0), 
+      new THREE.Euler(0,0,0), 
+      new THREE.Quaternion(0, 0, 0, 0)
+    ]
+  }, [])
+  
+  useFrame(({ mouse }) => {
+    const x = (mouse.x * viewport.width) / 100
+    const y = (mouse.y * viewport.height) / 100
+
+    posV.set(x,y,0)
+    rotE.set(y,x,0)
+
+    rotQ.setFromEuler(rotE)
+
+    group.current.position.lerp(posV, 0.1)
+    group.current.quaternion.slerp(rotQ, 0.1)
+  })
 
   return (
-    <>
+    <group ref={group}>
       <cubeCamera ref={camera} args={[0.1, 100, cubeRenderTarget]} position={[0, 0, 5]} />
-      <group>
+      <group name="mirrors">
         {mirrorsData.mirrors.map((mirror, index) => (
           <Mirror key={`0${index}`} {...mirror} texture={cubeRenderTarget.texture} map={thinFilmFresnelMap} />
         ))}
       </group>
-      <group position={[0, 0, 5]}>
+      <group name="text" position={[0, 0, 5]}>
         {textData.map((data, index) => <ResponsiveText key={`0${index}`} {...data}/>)}
       </group>
       <Octahedron ref={sphere} args={[20, 4, 4]} position={[0, 0, -5]} >
         <meshMatcapMaterial matcap={matcapTexture} side={THREE.BackSide} transparent opacity={0.3} color=""/>
       </Octahedron>
-    </>
+    </group>
   )
 }
