@@ -49,28 +49,28 @@ export function ThinFilmFresnelMap(filmThickness, refractiveIndexFilm, refractiv
 
 ThinFilmFresnelMap.prototype = Object.create(THREE.DataTexture.prototype, {
   filmThickness: {
-    get: function() {
+    get: function () {
       return this._filmThickness
     },
-    set: function(value) {
+    set: function (value) {
       this._filmThickness = value
       this.updateSettings(this._filmThickness, this._refractiveIndexFilm, this._refractiveIndexBase)
     }
   },
   refractiveIndexFilm: {
-    get: function() {
+    get: function () {
       return this._refractiveIndexFilm
     },
-    set: function(value) {
+    set: function (value) {
       this._refractiveIndexFilm = value
       this.updateSettings(this._filmThickness, this._refractiveIndexFilm, this._refractiveIndexBase)
     }
   },
   refractiveIndexBase: {
-    get: function() {
+    get: function () {
       return this._refractiveIndexBase
     },
-    set: function(value) {
+    set: function (value) {
       this._refractiveIndexBase = value
       this.updateSettings(this._filmThickness, this._refractiveIndexFilm, this._refractiveIndexBase)
     }
@@ -83,7 +83,7 @@ ThinFilmFresnelMap.prototype = Object.create(THREE.DataTexture.prototype, {
  * @param refractiveIndexFilm The refractive index of the thin film. Defaults to 2.
  * @param refractiveIndexBase The refractive index of the material under the film. Defaults to 3.
  */
-ThinFilmFresnelMap.prototype.updateSettings = function(filmThickness, refractiveIndexFilm, refractiveIndexBase) {
+ThinFilmFresnelMap.prototype.updateSettings = function (filmThickness, refractiveIndexFilm, refractiveIndexBase) {
   this._filmThickness = filmThickness || 380
   this._refractiveIndexFilm = refractiveIndexFilm || 2
   this._refractiveIndexBase = refractiveIndexBase || 3
@@ -93,7 +93,7 @@ ThinFilmFresnelMap.prototype.updateSettings = function(filmThickness, refractive
 /**
  * @private
  */
-ThinFilmFresnelMap.prototype._fresnelRefl = function(refractiveIndex1, refractiveIndex2, cos1, cos2, R, phi) {
+ThinFilmFresnelMap.prototype._fresnelRefl = function (refractiveIndex1, refractiveIndex2, cos1, cos2, R, phi) {
   // r is amplitudinal, R is power
   var sin1Sqr = 1.0 - cos1 * cos1 // = sin^2(incident)
   var refrRatio = refractiveIndex1 / refractiveIndex2
@@ -122,7 +122,7 @@ ThinFilmFresnelMap.prototype._fresnelRefl = function(refractiveIndex1, refractiv
 /**
  * @private
  */
-ThinFilmFresnelMap.prototype._updateData = function() {
+ThinFilmFresnelMap.prototype._updateData = function () {
   var filmThickness = this._filmThickness
   var refractiveIndexFilm = this._refractiveIndexFilm
   var refractiveIndexBase = this._refractiveIndexBase
