@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree, useResource } from 'react-three-fiber'
 import { Text, Box, useMatcapTexture, Octahedron, OrbitControls } from 'drei'
@@ -12,17 +12,23 @@ const textProps = {
 }
 
 
-function ResponsiveText(props) {
+function Title({ layers = undefined, ...props}) {
+  
+  const group = useRef()
+
+  useEffect(() => {
+    group.current.lookAt(0, 0, 0)
+  }, [])
   
   return (
-    <group {...props}>
-      <Text position={[-1.8, 0.4, 0]} {...textProps}>
+    <group {...props} ref={group}>
+      <Text position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
         R
       </Text>
-      <Text position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps}>
+      <Text position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps} layers={layers}>
         3
       </Text>
-      <Text position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps}>
+      <Text position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps} layers={layers}>
         F
       </Text>
     </group>
@@ -59,7 +65,6 @@ function Mirrors({ envMap }) {
   
   return (
     <group name="mirrors">
-
         <meshLambertMaterial ref={sideMaterial} map={thinFilmFresnelMap} color={0xaaaaaa} />
         <meshLambertMaterial ref={reflectionMaterial} map={thinFilmFresnelMap} envMap={envMap}/>
       
@@ -75,6 +80,15 @@ function Mirrors({ envMap }) {
 
 }
 
+function TitleCopies({ layers }) {
+  const vertices = useMemo(() => {
+    const y = new THREE.IcosahedronGeometry(8)
+    return y.vertices
+  }, [])
+
+  return (vertices.map(vertex => <Title position={vertex} layers={layers} />))
+}
+
 export default function Scene() {
   const [renderTarget] = useState(
     new THREE.WebGLCubeRenderTarget(1024, { format: THREE.RGBAFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter })
@@ -84,11 +98,9 @@ export default function Scene() {
   const sphere = useRef()
 
   const [matcapTexture] = useMatcapTexture('C8D1DC_575B62_818892_6E747B', 1024)
-
+  
   useFrame(({ gl, scene }) => {
-    sphere.current.visible = true
     camera.current.update(gl, scene)
-    sphere.current.visible = false
   })
 
   const group = useRef()
@@ -113,18 +125,19 @@ export default function Scene() {
   })
 
   return (
-    <group ref={group}>
-      <Octahedron ref={sphere} args={[20, 4, 4]} position={[0, 0, -5]}>
+    <group name="sceneContainer" ref={group}>
+      <Octahedron layers={[11]} name="background" ref={sphere} args={[20, 4, 4]} position={[0, 0, -5]}>
         <meshMatcapMaterial matcap={matcapTexture} side={THREE.BackSide} transparent opacity={0.3} />
       </Octahedron>
-      <cubeCamera ref={camera} args={[0.1, 100, renderTarget]} position={[0, 0, 5]} />
+
+      <cubeCamera layers={[11]} name="cubeCamera" ref={camera} args={[0.1, 100, renderTarget]} position={[0, 0, 5]} />
       
       <Mirrors envMap={renderTarget.texture} />
       
-      <group name="text" position={[0, 0, 5]}>
-        {textData.map((data, index) => ( <ResponsiveText key={index} {...data} /> ))}
-      </group>
-      <OrbitControls />
+      <Title position={[0, 0, -10]} />
+      <TitleCopies layers={[11]} />
+      
+      {window.location.search.indexOf('ctrl') > -1 && <OrbitControls />}
     </group>
   )
 }
