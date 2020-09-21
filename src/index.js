@@ -12,9 +12,9 @@ function App() {
     <Canvas concurrent shadowMap camera={{ position: [0, 0, 2], fov: 70 }}>
       <color attach="background" args={["#000"]} />
       <Suspense fallback={null}>
-        {/* <Scene /> */}
+        <Scene />
         {/* <Scene2 /> */}
-        <Scene3 />
+        {/* <Scene3 /> */}
       </Suspense>
       <ambientLight intensity={0.4} />
     </Canvas>
