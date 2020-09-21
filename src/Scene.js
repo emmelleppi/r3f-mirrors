@@ -22,13 +22,13 @@ function Title({ layers = undefined, ...props}) {
   
   return (
     <group {...props} ref={group}>
-      <Text position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
+      <Text material-toneMapped={false} position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
         R
       </Text>
-      <Text position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps} layers={layers}>
+      <Text material-toneMapped={false} position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps} layers={layers}>
         3
       </Text>
-      <Text position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps} layers={layers}>
+      <Text material-toneMapped={false} position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps} layers={layers}>
         F
       </Text>
     </group>
