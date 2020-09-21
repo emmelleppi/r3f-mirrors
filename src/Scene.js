@@ -4,31 +4,29 @@ import { useFrame, useThree, useResource } from 'react-three-fiber'
 import { Text, Box, useMatcapTexture, Octahedron, OrbitControls } from 'drei'
 
 import { ThinFilmFresnelMap } from './ThinFilmFresnelMap'
-import { mirrorsData, textData } from './data'
+import { mirrorsData } from './data'
 
 const textProps = {
   fontSize: 3.9,
   font: 'https://fonts.gstatic.com/s/raleway/v17/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVtzpbCIPrcVIT9d0c8.woff'
 }
 
-
 function Title({ layers = undefined, ...props}) {
   
   const group = useRef()
-
   useEffect(() => {
     group.current.lookAt(0, 0, 0)
   }, [])
   
   return (
     <group {...props} ref={group}>
-      <Text material-toneMapped={false} position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
+      <Text depthTest={false} material-toneMapped={false} position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
         R
       </Text>
-      <Text material-toneMapped={false} position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps} layers={layers}>
+      <Text depthTest={false} material-toneMapped={false} position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps} layers={layers}>
         3
       </Text>
-      <Text material-toneMapped={false} position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps} layers={layers}>
+      <Text depthTest={false} material-toneMapped={false} position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps} layers={layers}>
         F
       </Text>
     </group>
@@ -131,11 +129,10 @@ export default function Scene() {
       </Octahedron>
 
       <cubeCamera layers={[11]} name="cubeCamera" ref={camera} args={[0.1, 100, renderTarget]} position={[0, 0, 5]} />
-      
+      <TitleCopies layers={[11]} />
       <Mirrors envMap={renderTarget.texture} />
       
       <Title position={[0, 0, -10]} />
-      <TitleCopies layers={[11]} />
       
       {window.location.search.indexOf('ctrl') > -1 && <OrbitControls />}
     </group>
