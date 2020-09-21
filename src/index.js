@@ -7,11 +7,8 @@ import Scene from './Scene'
 
 function App() {
   return (
-    <Canvas
-      camera={{ position: [0, 0, 2], fov: 70 }}
-      onCreated={({ scene }) => {
-        scene.background = new THREE.Color('#000000').convertGammaToLinear()
-      }}>
+    <Canvas camera={{ position: [0, 0, 2], fov: 70 }}>
+      <color attach="background" args={["#000"]} />
       <Suspense fallback={null}>
         <Scene />
       </Suspense>

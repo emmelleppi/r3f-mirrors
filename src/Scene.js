@@ -20,13 +20,13 @@ function Title({ layers = undefined, ...props}) {
   
   return (
     <group {...props} ref={group}>
-      <Text depthTest={false} material-toneMapped={false} position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
+      <Text name="r" depthTest={false} material-toneMapped={false} position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
         R
       </Text>
-      <Text depthTest={false} material-toneMapped={false} position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps} layers={layers}>
+      <Text name="3" depthTest={false} material-toneMapped={false} position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps} layers={layers}>
         3
       </Text>
-      <Text depthTest={false} material-toneMapped={false} position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps} layers={layers}>
+      <Text name="f" depthTest={false} material-toneMapped={false} position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps} layers={layers}>
         F
       </Text>
     </group>
@@ -42,7 +42,9 @@ function Mirror({ sideMaterial, reflectionMaterial, args, ...props }) {
   })
 
   return (
-    <Box {...props} ref={ref} args={args}
+    <Box {...props} 
+      ref={ref} 
+      args={args}
       material={[
         sideMaterial,
         sideMaterial,
@@ -68,7 +70,9 @@ function Mirrors({ envMap }) {
       
         {mirrorsData.mirrors.map((mirror, index) => (
           <Mirror 
-            key={`0${index}`} {...mirror} 
+            key={`0${index}`} 
+            {...mirror} 
+            name={`mirror-${index}`}
             sideMaterial={sideMaterial.current}
             reflectionMaterial={reflectionMaterial.current}
           />
@@ -84,7 +88,7 @@ function TitleCopies({ layers }) {
     return y.vertices
   }, [])
 
-  return (vertices.map(vertex => <Title position={vertex} layers={layers} />))
+  return <group name="titleCopies">{vertices.map((vertex,i) => <Title name={"titleCopy-" + i} position={vertex} layers={layers} />)}</group>
 }
 
 export default function Scene() {
@@ -132,7 +136,7 @@ export default function Scene() {
       <TitleCopies layers={[11]} />
       <Mirrors envMap={renderTarget.texture} />
       
-      <Title position={[0, 0, -10]} />
+      <Title name="title" position={[0, 0, -10]} />
       
       {window.location.search.indexOf('ctrl') > -1 && <OrbitControls />}
     </group>
