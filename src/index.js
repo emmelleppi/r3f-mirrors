@@ -1,10 +1,10 @@
 import { render } from 'react-dom'
 import React, { Suspense } from 'react'
 import { Canvas } from 'react-three-fiber'
-import * as THREE from 'three'
+// import * as THREE from 'three'
 
-import Scene from './Scene'
-import Scene2 from './Scene2'
+// import Scene from './Scene'
+// import Scene2 from './Scene2'
 import Scene3 from './Scene3'
 
 function App() {
