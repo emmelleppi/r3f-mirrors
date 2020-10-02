@@ -8,7 +8,7 @@ import { mirrorsData } from './data'
 
 const textProps = {
   fontSize: 3.9,
-  font: 'http://fonts.gstatic.com/s/modak/v5/EJRYQgs1XtIEskMA-hI.woff'
+  font: 'https://fonts.gstatic.com/s/raleway/v17/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVtzpbCIPrcVIT9d0c8.woff'
 }
 
 function Title({ layers = undefined, ...props}) {
@@ -20,8 +20,14 @@ function Title({ layers = undefined, ...props}) {
   
   return (
     <group {...props} ref={group}>
-      <Text name="PANNA" depthTest={false} material-toneMapped={false} {...textProps} layers={layers}>
-        PANNA
+      <Text name="r" depthTest={false} material-toneMapped={false} position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
+        R
+      </Text>
+      <Text name="3" depthTest={false} material-toneMapped={false} position={[0, -0.6, 0]} rotation={[0, 0, -Math.PI / 16]} {...textProps} layers={layers}>
+        3
+      </Text>
+      <Text name="f" depthTest={false} material-toneMapped={false} position={[1.5, 0.2, 0]} scale={[-1, 1, 1]} {...textProps} layers={layers}>
+        F
       </Text>
     </group>
   )
@@ -34,7 +40,7 @@ function Mirror({ sideMaterial, reflectionMaterial, args, ...props }) {
     ref.current.rotation.y += 0.001
     ref.current.rotation.z += 0.01
   })
-  
+
   return (
     <Box {...props} 
       ref={ref} 
@@ -100,7 +106,7 @@ export default function Scene() {
   })
 
   const group = useRef()
-  
+
   const { viewport } = useThree()
 
   const [rotationEuler, rotationQuaternion] = useMemo(() => {
@@ -109,7 +115,7 @@ export default function Scene() {
       new THREE.Quaternion(0, 0, 0, 0)
     ]
   }, [])
-  
+
   useFrame(({ mouse }) => {
     const x = (mouse.x * viewport.width) / 100
     const y = (mouse.y * viewport.height) / 100
