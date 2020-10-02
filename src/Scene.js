@@ -11,13 +11,12 @@ const textProps = {
   font: 'https://fonts.gstatic.com/s/raleway/v17/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVtzpbCIPrcVIT9d0c8.woff'
 }
 
-function Title({ layers = undefined, ...props}) {
-  
+function Title({ layers = undefined, ...props }) {
   const group = useRef()
   useEffect(() => {
     group.current.lookAt(0, 0, 0)
   }, [])
-  
+
   return (
     <group {...props} ref={group}>
       <Text name="r" depthTest={false} material-toneMapped={false} position={[-1.8, 0.4, 0]} {...textProps} layers={layers}>
@@ -41,45 +40,24 @@ function Mirror({ sideMaterial, reflectionMaterial, args, ...props }) {
     ref.current.rotation.z += 0.01
   })
 
-  return (
-    <Box {...props} 
-      ref={ref} 
-      args={args}
-      material={[
-        sideMaterial,
-        sideMaterial,
-        sideMaterial,
-        sideMaterial,
-        reflectionMaterial,
-        reflectionMaterial
-      ]}
-    />
-  )
+  return <Box {...props} ref={ref} args={args} material={[sideMaterial, sideMaterial, sideMaterial, sideMaterial, reflectionMaterial, reflectionMaterial]} />
 }
 
 function Mirrors({ envMap }) {
-
   const sideMaterial = useResource()
   const reflectionMaterial = useResource()
   const [thinFilmFresnelMap] = useState(new ThinFilmFresnelMap())
-  
+
   return (
     <group name="mirrors">
-        <meshLambertMaterial ref={sideMaterial} map={thinFilmFresnelMap} color={0xaaaaaa} />
-        <meshLambertMaterial ref={reflectionMaterial} map={thinFilmFresnelMap} envMap={envMap}/>
-      
-        {mirrorsData.mirrors.map((mirror, index) => (
-          <Mirror 
-            key={`0${index}`} 
-            {...mirror} 
-            name={`mirror-${index}`}
-            sideMaterial={sideMaterial.current}
-            reflectionMaterial={reflectionMaterial.current}
-          />
-        ))}
-      </group>
-  )
+      <meshLambertMaterial ref={sideMaterial} map={thinFilmFresnelMap} color={0xaaaaaa} />
+      <meshLambertMaterial ref={reflectionMaterial} map={thinFilmFresnelMap} envMap={envMap} />
 
+      {mirrorsData.mirrors.map((mirror, index) => (
+        <Mirror key={`0${index}`} {...mirror} name={`mirror-${index}`} sideMaterial={sideMaterial.current} reflectionMaterial={reflectionMaterial.current} />
+      ))}
+    </group>
+  )
 }
 
 function TitleCopies({ layers }) {
@@ -88,19 +66,26 @@ function TitleCopies({ layers }) {
     return y.vertices
   }, [])
 
-  return <group name="titleCopies">{vertices.map((vertex,i) => <Title name={"titleCopy-" + i} position={vertex} layers={layers} />)}</group>
+  return (
+    <group name="titleCopies">
+      {vertices.map((vertex, i) => (
+        <Title name={'titleCopy-' + i} position={vertex} layers={layers} />
+      ))}
+    </group>
+  )
 }
 
 export default function Scene() {
-  const [renderTarget] = useState(
-    new THREE.WebGLCubeRenderTarget(1024, { format: THREE.RGBAFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter })
+  const renderTarget = useMemo(
+    () => new THREE.WebGLCubeRenderTarget(1024, { format: THREE.RGBAFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter }),
+    []
   )
 
   const camera = useRef()
   const sphere = useRef()
 
   const [matcapTexture] = useMatcapTexture('C8D1DC_575B62_818892_6E747B', 1024)
-  
+
   useFrame(({ gl, scene }) => {
     camera.current.update(gl, scene)
   })
@@ -110,10 +95,7 @@ export default function Scene() {
   const { viewport } = useThree()
 
   const [rotationEuler, rotationQuaternion] = useMemo(() => {
-    return [
-      new THREE.Euler(0, 0, 0), 
-      new THREE.Quaternion(0, 0, 0, 0)
-    ]
+    return [new THREE.Euler(0, 0, 0), new THREE.Quaternion(0, 0, 0, 0)]
   }, [])
 
   useFrame(({ mouse }) => {
@@ -135,9 +117,9 @@ export default function Scene() {
       <cubeCamera layers={[11]} name="cubeCamera" ref={camera} args={[0.1, 100, renderTarget]} position={[0, 0, 5]} />
       <TitleCopies layers={[11]} />
       <Mirrors envMap={renderTarget.texture} />
-      
+
       <Title name="title" position={[0, 0, -10]} />
-      
+
       {window.location.search.indexOf('ctrl') > -1 && <OrbitControls />}
     </group>
   )

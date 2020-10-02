@@ -8,7 +8,7 @@ import Scene from './Scene'
 function App() {
   return (
     <Canvas camera={{ position: [0, 0, 2], fov: 70 }}>
-      <color attach="background" args={["#000"]} />
+      <color attach="background" args={['#000']} />
       <Suspense fallback={null}>
         <Scene />
       </Suspense>
